@@ -1,9 +1,9 @@
 Here is a brief intro to some of the files here:
 
-SBAGEN.txt      Full user documentation and installation notes; PLEASE READ THIS
+SBAGEN.txt      Full user documentation and installation notes
+                (note that the executable is called sbagen-arm64)
 
-sbagen.exe      The Win32 executable (ZIP distribution only)
-sbagen          The Mac OS X executable (Mac distribution only)
+sbagen-arm64    Apple Silicon version
 
 COPYING.txt     License (GNU General Public Licence version 2)
 

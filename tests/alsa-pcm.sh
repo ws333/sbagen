@@ -9,7 +9,7 @@
 #   tests/alsa-pcm.sh [path-to-sbagen-binary]
 
 set -u
-SBAGEN=${1:-$(cd "$(dirname "$0")/.." && pwd)/dev/sbagen-fixed}
+SBAGEN=${1:-$(cd "$(dirname "$0")/.." && pwd)/dev/sbagen-arm64}
 
 CONF=$(mktemp)
 RAW=/tmp/sbagen_test.raw

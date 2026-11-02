@@ -1,6 +1,6 @@
 # SBaGen - build, replacing the 19 hand-written mk* scripts of the 1.4.5 tree.
 #
-#   make              build dev/sbagen-fixed (file output)
+#   make              build dev/sbagen-arm64 (file output)
 #   make lib          build dev/libsbagen.a (in-process render API)
 #   make unit         build tests/unit_render (library render tool)
 #   make alsa         build with live ALSA output
@@ -15,9 +15,14 @@
 # archives, which cannot link into a 64-bit build.  Run 'make codecs' once to
 # build proper 64-bit ones.
 
+# Setting CFLAGS to be able to build on Apple Silicon.
+# Install Homebrew and theb install any missing libs if needed
+# by running 'brew install flac opus libogg' in terminal
+CFLAGS	=	"-I/opt/homebrew/include"
+
 CC      ?= cc
 SRCDIR   = dev
-TARGET   = $(SRCDIR)/sbagen-fixed
+TARGET   = $(SRCDIR)/sbagen-arm64
 SRC      = $(SRCDIR)/sbagen.c
 # These are #include'd into sbagen.c rather than compiled separately, so they
 # must be listed as prerequisites or edits to them will not trigger a rebuild.
@@ -54,21 +59,18 @@ CFLAGS_COMMON += -DHAVE_OGG_SYSTEM
 LDLIBS += $(OGG_SYS_LIBS)
 endif
 
-# MP3/OGG mixing.  The 1.4.5 libs/ directory ships i686 archives, which cannot
-# be linked into a 64-bit build, so probe each archive for 64-bit ELF objects
-# rather than merely testing that the file exists.  To enable codecs, build
-# 64-bit libmad/libvorbisidec and drop them in as libs/linux-libmad.a and
+# MP3/OGG mixing.  The upstream 1.4.5 archives are i686 and cannot link into
+# native arm64 or x86-64 builds.  codec_ok checks that an archive is readable;
+# it does not verify architecture compatibility, which the linker will report.
+# Build codec libraries with the host toolchain using 'make codecs'. So to enable codecs,
+# build 64-bit libmad/libvorbisidec and drop them in as libs/linux-libmad.a and
 # libs/linux-libvorbisidec.a.
 ARCH := $(shell uname -m)
 
-# An archive is usable only if its members are x86-64 ELF objects.  The
-# upstream 1.4.5 libs/ directory ships i686 archives, which cannot be linked
+# The upstream 1.4.5 libs/ directory ships i686 archives, which cannot be linked
 # into a 64-bit build.
 define codec_ok
-$(shell [ -f $(1) ] && \
-  ar t $(1) >/dev/null 2>&1 && \
-  ar p $(1) $$(ar t $(1) | head -1) 2>/dev/null | od -An -tx1 -N20 | \
-    tr -d ' \n' | grep -qi '7f454c4602' && echo yes)
+$(shell [ -f $(1) ] && ar t $(1) >/dev/null 2>&1 && echo yes)
 endef
 
 CODEC_LIBS =

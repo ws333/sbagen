@@ -1,4 +1,18 @@
-# SBaGen — maintained fork
+# SBaGen — for Apple Silicon
+
+### Requirements
+
+- Install Homebrew https://brew.sh/ then install the required libs...
+
+```bash
+brew install flac opus libogg
+```
+
+- Then run make as usual
+- You can ignore the message "warning: variable 'update' set but not used"
+- Output file is ./dev/sbagen-arm64
+
+# Original README
 
 **Sequenced Binaural Beat Generator.**
 
@@ -17,23 +31,23 @@ a regression test suite, and adds a working audio backend for modern Linux.
 
 The upstream release is from 2011 and predates a lot of what changed since.
 
-| Symptom in 1.4.5 | Cause |
-| --- | --- |
-| Segfault on any sequence with no time lines — including an empty file | A null `Period` ring was dereferenced unconditionally |
-| Stack corruption from `-p drop` with a long duration | `n_step` wrote past the fixed-size `beat[40]` array |
-| Crash (SIGFPE) from `-p drop t1,...` | Division by `n_step-1` when there is a single step |
-| Infinite loop / buffer overrun on a self-referential block | Unbounded `sprintf` and unbounded block recursion |
-| **Silence** where audio was expected, from `-i` inside a `.sbg` file | `correctPeriods()` ran mid-parse and discarded the rest of the sequence |
-| `-E` silently overrode an explicit `-L` | Two independent `if` statements instead of `if`/`else if` |
-| Build failure at `-O0` and `-O3` | `inline` on `calcNow()`/`t_per*()` emits no out-of-line definition under C99 |
-| Garbled parse of lines over 4096 characters | Lines were silently split, and the tail re-parsed as a bogus time |
-| Possible click/wrap at high amplitude | `int` overflow in the mix accumulator |
-| `-E` on a sequence with no duration rendered **forever** | a length of 0 is indistinguishable from "unlimited" to the output loop; a 38 GB wav appeared before it was caught |
+| Symptom in 1.4.5                                                      | Cause                                                                                                             |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Segfault on any sequence with no time lines — including an empty file | A null `Period` ring was dereferenced unconditionally                                                             |
+| Stack corruption from `-p drop` with a long duration                  | `n_step` wrote past the fixed-size `beat[40]` array                                                               |
+| Crash (SIGFPE) from `-p drop t1,...`                                  | Division by `n_step-1` when there is a single step                                                                |
+| Infinite loop / buffer overrun on a self-referential block            | Unbounded `sprintf` and unbounded block recursion                                                                 |
+| **Silence** where audio was expected, from `-i` inside a `.sbg` file  | `correctPeriods()` ran mid-parse and discarded the rest of the sequence                                           |
+| `-E` silently overrode an explicit `-L`                               | Two independent `if` statements instead of `if`/`else if`                                                         |
+| Build failure at `-O0` and `-O3`                                      | `inline` on `calcNow()`/`t_per*()` emits no out-of-line definition under C99                                      |
+| Garbled parse of lines over 4096 characters                           | Lines were silently split, and the tail re-parsed as a bogus time                                                 |
+| Possible click/wrap at high amplitude                                 | `int` overflow in the mix accumulator                                                                             |
+| `-E` on a sequence with no duration rendered **forever**              | a length of 0 is indistinguishable from "unlimited" to the output loop; a 38 GB wav appeared before it was caught |
 
 Three more bugs surfaced during the work itself: `if (opt_L)` was true when
 `opt_L == -1` ("not supplied"), which the old unconditional `-E` branch
 happened to mask; the first attempt at the overflow fix silently zeroed the
-left channel, because `-0x80000000` is an *unsigned* literal and forced an
+left channel, because `-0x80000000` is an _unsigned_ literal and forced an
 unsigned comparison; and the `-E` zero-duration case above, found while
 wiring `mksounds.sh` up to sequence files.
 
@@ -84,9 +98,9 @@ sbagen-fixed -S -w opus -o night.opus -L 10:00:00 -i '180+8/0.35 pink/0.12'
 sbagen-fixed -S -w flac -o focus.flac -L 01:00:00 focus-10-a.sbg
 ```
 
-| Format | Size vs WAV | Notes |
-| --- | --- | --- |
-| `flac` | ~7x smaller | Lossless; decodes back to identical samples |
+| Format | Size vs WAV  | Notes                                       |
+| ------ | ------------ | ------------------------------------------- |
+| `flac` | ~7x smaller  | Lossless; decodes back to identical samples |
 | `opus` | ~13x smaller | Lossy; needs 48 kHz, selected automatically |
 
 The same 10-hour sleep session comes to 462 MB instead of 6 GB, and renders

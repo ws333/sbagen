@@ -17,7 +17,7 @@ set -u
 
 HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(dirname "$HERE")
-SBAGEN=${1:-$ROOT/dev/sbagen-fixed}
+SBAGEN=${1:-$ROOT/dev/sbagen-arm64}
 GOLDEN=$HERE/golden/golden.txt
 
 [ -x "$SBAGEN" ] || { echo "FATAL: no sbagen binary at $SBAGEN"; exit 2; }
