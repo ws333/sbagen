@@ -1,0 +1,47 @@
+## Created by Bjornar Hvidsten - nenania@proton.me:
+##
+## Sequence based on Circle Of Self Empowerment
+## (Channeled by Bashar through Darryl Anka)
+## 
+## Binaural version - listen with headphones
+##
+## Brainwaves:
+## Epsilon 	 .5 Hz
+## Delta 	 .5 - 3 Hz
+## Theta 	  3 - 8 Hz
+## Alpha 	  8 - 12 Hz
+## Beta 	 12 - 40 Hz
+## Gamma 	 40 - 100 Hz
+## Lamba	100 - 200 Hz on a .5 Hz carrier wave (epsilon) creating a "circle"
+
+-SE 
+
+off: -
+
+epsilon05:	200+0.5/13 mix/85
+
+delta05:	  200+0.5/13 mix/85 bell800/1
+
+theta3:		  200+3/13 mix/85 bell800/1
+
+alpha8:		  200+8/13 mix/85 bell800/1
+
+beta12:		  200+12/13 mix/85 bell800/1
+
+gamma40:	  200+40/13 mix/85 bell800/1
+
+lambda100:  200+100/6.5 mix/85 bell800/1 200+0.5/6.5
+
+lambda200:  200+200/6.5 mix/85 bell800/1 200+0.5/6.5
+
+0:00:00 == off ->
+0:01:00 == epsilon05 ->
+0:03:00 == delta05 ->
+0:05:00 == theta3 ->
+0:07:00 == alpha8 ->
+0:09:00 == beta12 ->
+0:11:00 == gamma40 ->
+0:13:00 == lambda100 ->
+0:15:00 == lambda200 ->
+0:15:09 == epsilon05
+0:16:00 == off
